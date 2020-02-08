@@ -1,0 +1,35 @@
+{
+  "name": "capeandbay/allcommerce-department-store",
+  "description": "DepartmentStore - The Official AllCommerce API Merchant-side SDK for Laravel",
+  "type": "library",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Angel Gonzalez",
+      "email": "angel@capeandbay.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "laravel/framework": "5.8.*|^6.0",
+    "ixudra/curl": "^6.17"
+  },
+  "autoload": {
+    "psr-4": {
+      "AllCommerce\\DepartmentStore\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "branch-alias": {
+        "dev-master": "0.0.1-dev"
+      },
+      "providers": [
+        "AllCommerce\\DepartmentStore\\DepartmentStoreServiceProvider"
+      ],
+      "aliases": {
+        "DepartmentStore": "AllCommerce\\Facades\\DepartmentStore"
+      }
+    }
+  }
+}
