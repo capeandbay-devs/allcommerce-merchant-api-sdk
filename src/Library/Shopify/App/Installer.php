@@ -40,7 +40,27 @@ class Installer extends SalesChannel
 
         if($response && array_key_exists('nonce', $response))
         {
+            $this->nonce = $response['nonce'];
             $results = $response['nonce'];
+        }
+
+        return $results;
+    }
+
+    public function install($data = [])
+    {
+        $results = false;        
+
+        $url = $this->installer_url().'/confirm-request';
+
+        $response = Curl::to($url)
+            ->withData($data)
+            ->asJson(true)
+            ->post();
+
+        if($response && array_key_exists('stats', $response))
+        {
+            $results = $response['stats'];
         }
 
         return $results;
