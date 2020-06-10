@@ -17,11 +17,11 @@ class DepartmentStore
         $this->access_token = $token;
     }
 
-    public function get($feature = '')
+    public function get($feature = '', $params = [])
     {
         $results = false;
 
-        $asset = $this->library->retrieve($feature);
+        $asset = $this->library->retrieve($feature, $params);
 
         if($asset)
         {
