@@ -21,7 +21,7 @@ class LibraryService
                 break;
 
             case 'installer':
-                $results = $this->loadObjectWithSingleParam($feature, $params['shop_url']);
+                $results = $this->loadObjectWithSingleParam($feature, $params['shop']);
 
                 break;
 
