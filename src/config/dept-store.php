@@ -9,6 +9,7 @@ return [
     // You can rename this disk here. Default: root
     'root_disk_name' => 'root',
     'class_maps' => [
-        'merchant' => \AllCommerce\DepartmentStore\Library\Account\Merchant::class
+        'merchant' => \AllCommerce\DepartmentStore\Library\Account\Merchant::class,
+        'installer' => \AllCommerce\DepartmentStore\Library\Shopify\App\Installer::class
     ]
 ];

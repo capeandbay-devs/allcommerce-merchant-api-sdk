@@ -9,7 +9,7 @@ class LibraryService
 
     }
 
-    public function retrieve($feature = '')
+    public function retrieve($feature = '', $params = [])
     {
         $results = false;
 
@@ -18,6 +18,10 @@ class LibraryService
             case 'merchant':
                 $merchant_obj = $this->basicLoadObj($feature);
                 $results = $merchant_obj->refreshProfileData();
+                break;
+
+            case 'installer':
+                $results = $this->loadObjectWithSingleParam($feature, $params['shop_url']);
 
                 break;
 
@@ -35,6 +39,22 @@ class LibraryService
             $port_model_name = config('dept-store.class_maps.'.$name);
 
             $results = new $port_model_name();
+        }
+        catch(\Exception $e)
+        {
+            $results = false;
+        }
+
+        return new $results;
+    }
+
+    public function loadObjectWithSingleParam($name, $param)
+    {
+        try
+        {
+            $port_model_name = config('dept-store.class_maps.'.$name);
+
+            $results = new $port_model_name($param);
         }
         catch(\Exception $e)
         {
