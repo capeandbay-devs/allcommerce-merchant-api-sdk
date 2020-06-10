@@ -7,7 +7,7 @@ use AllCommerce\DepartmentStore\Library\Shopify\SalesChannel;
 
 class Installer extends SalesChannel
 {
-    protected $url = '/installer';
+    protected $installer_url = '/installer';
     protected $shop_url;
     protected $nonce;
 
@@ -20,7 +20,7 @@ class Installer extends SalesChannel
 
     public function installer_url()
     {
-        return $this->ac_shopify_url().$this->url;
+        return $this->ac_shopify_url().$this->installer_url;
     }
 
     public function getNonce()
@@ -31,7 +31,9 @@ class Installer extends SalesChannel
             'shop_url' => $this->shop_url
         ];
 
-        $response = Curl::to($this->installer_url().'/nonce')
+        $url = $this->installer_url().'/nonce';
+
+        $response = Curl::to($url)
             ->withData($payload)
             ->asJson(true)
             ->post();
