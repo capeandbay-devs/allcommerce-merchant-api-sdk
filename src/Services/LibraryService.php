@@ -45,7 +45,7 @@ class LibraryService
             $results = false;
         }
 
-        return new $results;
+        return $results;
     }
 
     public function loadObjectWithSingleParam($name, $param)
@@ -61,6 +61,6 @@ class LibraryService
             $results = false;
         }
 
-        return new $results;
+        return $results;
     }
 }
