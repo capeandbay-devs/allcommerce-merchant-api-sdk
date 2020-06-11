@@ -42,10 +42,10 @@ class Storefront extends SalesChannel
                 $this->session_data = $data;
                 $this->shop_data = $response['shop'];
 
-                $this->installed = ($response['status']['installed'] == 1);
-                $this->date_installed = $response['status']['created_at'];
-                $this->last_updated = $response['status']['updated_at'];
-                $this->ac_merchant = $response['allcommerce_merchant'];
+                $this->installed = ($this->shop_data['status']['installed'] == 1);
+                $this->date_installed = $this->shop_data['status']['created_at'];
+                $this->last_updated = $this->shop_data['status']['updated_at'];
+                $this->ac_merchant = $this->shop_data['allcommerce_merchant'];
                 $results = $this;
             }
         }
