@@ -38,6 +38,7 @@ class Storefront extends SalesChannel
             if($response['success'])
             {
                 $this->shop_data = $response['shop'];
+                $results = $this;
             }
         }
 
