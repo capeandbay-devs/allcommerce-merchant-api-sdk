@@ -52,4 +52,21 @@ class Storefront extends SalesChannel
 
         return $results;
     }
+
+    public function isInstalled()
+    {
+        return $this->installed == true;
+    }
+
+    public function getMerchant()
+    {
+        $results = false;
+
+        if(!empty($this->ac_merchant))
+        {
+            // @todo - return an AC Merchant Object
+        }
+
+        return $results;
+    }
 }
