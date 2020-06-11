@@ -9,8 +9,10 @@ class Storefront extends SalesChannel
 {
     protected $storefront_url = '/shop';
 
-    protected $shop_url;
+    protected $installed, $shop_url, $ac_merchant;
     protected $shop_data = [];
+    protected $session_data = [];
+    protected $date_installed, $last_updated;
 
     public function __construct($shop_url)
     {
@@ -37,7 +39,13 @@ class Storefront extends SalesChannel
         {
             if($response['success'])
             {
+                $this->session_data = $data;
                 $this->shop_data = $response['shop'];
+
+                $this->installed = ($response['status']['installed'] == 1);
+                $this->date_installed = $response['status']['created_at'];
+                $this->last_updated = $response['status']['updated_at'];
+                $this->ac_merchant = $response['allcommerce_merchant'];
                 $results = $this;
             }
         }
