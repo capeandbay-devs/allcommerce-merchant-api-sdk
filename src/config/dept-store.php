@@ -10,6 +10,7 @@ return [
     'root_disk_name' => 'root',
     'class_maps' => [
         'merchant' => \AllCommerce\DepartmentStore\Library\Account\Merchant::class,
-        'installer' => \AllCommerce\DepartmentStore\Library\Shopify\App\Installer::class
+        'installer' => \AllCommerce\DepartmentStore\Library\Shopify\App\Installer::class,
+        'shop' => \AllCommerce\DepartmentStore\Library\Shopify\Shop\Storefront::class
     ]
 ];
