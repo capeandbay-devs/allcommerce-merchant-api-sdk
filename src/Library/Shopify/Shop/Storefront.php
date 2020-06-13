@@ -65,7 +65,11 @@ class Storefront extends SalesChannel
 
         if(!empty($this->ac_merchant))
         {
-            // @todo - return an AC Merchant Object
+            $results = $this->ac_merchant;
+        }
+        else
+        {
+            // @todo - curl out to get that info!
         }
 
         return $results;
