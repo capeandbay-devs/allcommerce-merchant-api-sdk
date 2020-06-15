@@ -79,4 +79,9 @@ class Storefront extends SalesChannel
     {
         return $this->access_token;
     }
+
+    public function getShopData()
+    {
+        return $this->shop_data;
+    }
 }
