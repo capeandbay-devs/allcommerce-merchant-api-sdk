@@ -9,7 +9,7 @@ class Storefront extends SalesChannel
 {
     protected $storefront_url = '/shop';
 
-    protected $installed, $shop_url, $ac_merchant, $access_token;
+    protected $installed, $shop_url, $ac_merchant, $ac_shop, $access_token;
     protected $shop_data = [];
     protected $session_data = [];
     protected $date_installed, $last_updated;
@@ -47,6 +47,7 @@ class Storefront extends SalesChannel
                 $this->date_installed = $this->shop_data['status']['created_at'];
                 $this->last_updated = $this->shop_data['status']['updated_at'];
                 $this->ac_merchant = $this->shop_data['allcommerce_merchant'];
+                $this->ac_shop = $this->shop_data['allcommerce_shop'];
                 $results = $this;
             }
         }
@@ -66,6 +67,22 @@ class Storefront extends SalesChannel
         if(!empty($this->ac_merchant))
         {
             $results = $this->ac_merchant;
+        }
+        else
+        {
+            // @todo - curl out to get that info!
+        }
+
+        return $results;
+    }
+
+    public function getShop()
+    {
+        $results = false;
+
+        if(!empty($this->ac_shop))
+        {
+            $results = $this->ac_shop;
         }
         else
         {
