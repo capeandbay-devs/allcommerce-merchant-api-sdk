@@ -11,8 +11,6 @@ class LibraryService
 
     public function retrieve($feature = '', $params = [])
     {
-        $results = false;
-
         switch($feature)
         {
             case 'merchant':
@@ -23,7 +21,10 @@ class LibraryService
             case 'installer':
             case 'shop':
                 $results = $this->loadObjectWithSingleParam($feature, $params['shop']);
+                break;
 
+            case 'lead':
+                $results = $this->loadObjectWithTwoParams($feature, $params['payload'], $params['lead_uuid']);
                 break;
 
             default:
@@ -56,6 +57,22 @@ class LibraryService
             $port_model_name = config('dept-store.class_maps.'.$name);
 
             $results = new $port_model_name($param);
+        }
+        catch(\Exception $e)
+        {
+            $results = false;
+        }
+
+        return $results;
+    }
+
+    public function loadObjectWithTwoParams($name, $param1, $param2)
+    {
+        try
+        {
+            $port_model_name = config('dept-store.class_maps.'.$name);
+
+            $results = new $port_model_name($param1, $param2);
         }
         catch(\Exception $e)
         {

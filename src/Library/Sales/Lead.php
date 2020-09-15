@@ -119,4 +119,39 @@ class Lead extends Feature
 
         return $results;
     }
+
+    public function getLeadId()
+    {
+        return $this->uuid;
+    }
+
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    public function getFullName()
+    {
+        return "{$this->getFirstName()} {$this->getLastName()}";
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getPhone()
+    {
+        return $this->getPhone();
+    }
+
+    public function getProducts()
+    {
+        return $this->products;
+    }
 }
