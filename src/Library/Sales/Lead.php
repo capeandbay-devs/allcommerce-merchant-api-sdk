@@ -1,6 +1,6 @@
 <?php
 
-namespace AllCommerce\DepartmentStore\Library\Leads;
+namespace AllCommerce\DepartmentStore\Library\Sales;
 
 use AllCommerce\DepartmentStore\Library\Feature;
 
