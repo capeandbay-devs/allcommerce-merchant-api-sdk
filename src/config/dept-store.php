@@ -12,7 +12,7 @@ return [
         'merchant' => \AllCommerce\DepartmentStore\Library\Account\Merchant::class,
         'installer' => \AllCommerce\DepartmentStore\Library\Shopify\App\Installer::class,
         'shop' => \AllCommerce\DepartmentStore\Library\Shopify\Shop\Storefront::class,
-        'lead' => \AllCommerce\DepartmentStore\Library\Shopify\Sales\Lead::class,
+        'lead' => \AllCommerce\DepartmentStore\Library\Sales\Lead::class,
         'product' => \AllCommerce\DepartmentStore\Library\Inventory\Product::class,
         'product_variants' => \AllCommerce\DepartmentStore\Library\Inventory\ProductVariants::class,
     ]
