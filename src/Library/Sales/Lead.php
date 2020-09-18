@@ -9,7 +9,7 @@ class Lead extends Feature
     protected $url = '/leads';
 
     protected $uuid, $first_name, $last_name, $email, $phone;
-    protected $shipping_address, $billing_address;
+    protected $shipping_address, $shipping_uuid, $billing_address, $billing_uuid;
     protected $attributes;
     protected $order;
     protected $shop, $merchant, $client;
@@ -76,12 +76,25 @@ class Lead extends Feature
                 $this->email = $lead['lead']['email'];
                 $this->phone = $lead['lead']['phone'];
 
-                // @todo - create billing and shipping objects and pass the response data to it
-                $this->shipping_address = null;
-                $this->billing_address = null;
+                // create billing and shipping objects and pass the response data to it
+                if(!empty($lead['shipping_address']))
+                {
+                    $this->shipping_uuid = $lead['shipping_address']['id'];
+                    $this->shipping_address = null;
+                }
 
-                // @todo - create lead_attributes and order objects and pass the response data to it
-                $this->attributes = null;
+                if(!empty($lead['billing_address']))
+                {
+                    $this->billing_uuid = $lead['billing_address']['id'];
+                    $this->billing_address = null;
+                }
+
+                if(!empty($lead['attributes']))
+                {
+                    $this->attributes = $lead['attributes'];
+                }
+
+                // @todo - create order object and pass the response data to it
                 $this->order = null;
 
                 $this->ip = $lead['lead']['ip'];
@@ -123,6 +136,16 @@ class Lead extends Feature
     public function getLeadId()
     {
         return $this->uuid;
+    }
+
+    public function getBillingId()
+    {
+        return $this->billing_uuid;
+    }
+
+    public function getShippingId()
+    {
+        return $this->shipping_uuid;
     }
 
     public function getFirstName()
