@@ -49,18 +49,31 @@ class Lead extends Feature
         return $this->allcommerce_client->api_url().$this->url;
     }
 
-    public function createOrUpdateLead($payload, $lead_uuid = null)
+    public function createOrUpdateLead($argies, $lead_uuid = null)
     {
         $results = false;
 
         $payload = [
-            'attributes' => $payload
+            'attributes' => $argies
         ];
 
         if(!is_null($lead_uuid))
         {
             $payload['lead_uuid'] = $lead_uuid;
         }
+
+        if(array_key_exists('shipping_uuid', $argies))
+        {
+            $payload['shipping_uuid'] = $argies['shipping_uuid'];
+            unset($payload['attributes']['shipping_uuid']);
+        }
+
+        if(array_key_exists('billing_uuid', $argies))
+        {
+            $payload['billing_uuid'] = $argies['billing_uuid'];
+            unset($payload['attributes']['billing_uuid']);
+        }
+
         // Ping AllCommerce Merchants or false
         $lead = $this->allcommerce_client->post($this->leads_url(), $payload);
 
