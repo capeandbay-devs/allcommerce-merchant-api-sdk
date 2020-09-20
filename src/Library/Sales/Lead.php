@@ -104,7 +104,11 @@ class Lead extends Feature
 
                 if(!empty($lead['attributes']))
                 {
-                    $this->attributes = $lead['attributes'];
+                    $this->attributes = [];
+                    foreach($lead['attributes'] as $attr)
+                    {
+                        $this->attributes[$attr['name']] = $attr;
+                    }
                 }
 
                 // @todo - create order object and pass the response data to it
@@ -141,6 +145,25 @@ class Lead extends Feature
 
                 return $this;
             }
+        }
+
+        return $results;
+    }
+
+    public function getLeadAttributes($name = null)
+    {
+        $results = false;
+
+        if(!is_null($name))
+        {
+            if(array_key_exists($name, $this->attributes))
+            {
+                $results = $this->attributes['name'];
+            }
+        }
+        else
+        {
+            $results = $this->attributes;
         }
 
         return $results;
