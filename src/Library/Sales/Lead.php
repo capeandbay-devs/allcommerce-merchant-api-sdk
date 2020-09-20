@@ -158,7 +158,7 @@ class Lead extends Feature
         {
             if(array_key_exists($name, $this->attributes))
             {
-                $results = $this->attributes['name'];
+                $results = $this->attributes[$name];
             }
         }
         else
