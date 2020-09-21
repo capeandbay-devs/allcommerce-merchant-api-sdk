@@ -1,7 +1,7 @@
 {
   "name": "capeandbay/allcommerce-department-store",
   "description": "DepartmentStore - The Official AllCommerce API Merchant-side SDK for Laravel",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": ["CapeAndBay", "Laravel", "AllCommerce", "Shopify", "eCommerce"],
   "homepage": "https://allcommerce.capeandbay.com",
   "type": "library",
