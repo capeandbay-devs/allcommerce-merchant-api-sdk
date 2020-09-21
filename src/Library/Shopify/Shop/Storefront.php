@@ -12,6 +12,7 @@ class Storefront extends SalesChannel
     protected $installed, $shop_url, $ac_merchant, $ac_shop, $access_token;
     protected $shop_data = [];
     protected $session_data = [];
+    protected $shipping_rates = [];
     protected $date_installed, $last_updated;
 
     public function __construct($shop_url)
@@ -23,7 +24,14 @@ class Storefront extends SalesChannel
 
     public function storefront_url()
     {
+        // @todo - need a way to determine that the shop is a shopify shop before
+        // @todo - passing the shopify set of web points.
         return $this->ac_shopify_url().$this->storefront_url;
+    }
+
+    public function shipping_rates_url()
+    {
+        return $this->storefront_url().'/shipping-rates';
     }
 
     public function init($data = [])
@@ -100,5 +108,34 @@ class Storefront extends SalesChannel
     public function getShopData()
     {
         return $this->shop_data;
+    }
+
+    public function getShopShippingRates()
+    {
+        $results = false;
+
+        if(!empty($this->shipping_rates))
+        {
+            $results = $this->shipping_rates;
+        }
+        else
+        {
+            $payload = [
+                'shop_url' => $this->shop_url
+            ];
+
+            $response = $this->allcommerce_client()->post($this->shipping_rates_url(), $payload);
+
+            if($response && array_key_exists('success', $response))
+            {
+                if($response['success'])
+                {
+                    $this->shipping_rates = $response['shipping_rates'];
+                    $results = $this->shipping_rates;
+                }
+            }
+        }
+
+        return $results;
     }
 }

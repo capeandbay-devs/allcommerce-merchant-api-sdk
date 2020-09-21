@@ -17,4 +17,9 @@ class SalesChannel extends Feature
     {
         return $this->allcommerce_client->api_url().$this->url;
     }
+
+    public function allcommerce_client()
+    {
+        return $this->allcommerce_client;
+    }
 }
