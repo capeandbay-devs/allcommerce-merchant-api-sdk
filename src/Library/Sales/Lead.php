@@ -8,10 +8,11 @@ class Lead extends Feature
 {
     protected $url = '/leads';
 
-    protected $uuid, $first_name, $last_name, $email, $phone;
+    protected $uuid, $first_name, $last_name, $email, $phone, $optin;
     protected $shipping_address, $shipping_uuid, $billing_address, $billing_uuid;
     protected $attributes;
     protected $order;
+    protected $checkout_type, $checkout_id;
     protected $shop, $merchant, $client;
     protected $ip, $utm;
     protected $created, $last_updated;
@@ -212,5 +213,94 @@ class Lead extends Feature
     public function getProducts()
     {
         return $this->products;
+    }
+
+
+    public function setEmail($email) : void
+    {
+        $this->email = $email;
+    }
+
+    public function setOptin($flag) : void
+    {
+        $this->optin = $flag;
+    }
+
+    public function setShopUuid($uuid) : void
+    {
+        $this->shop = $uuid;
+    }
+
+    public function setCheckout($type, $id) : void
+    {
+        $this->checkout_type = $type;
+        $this->checkout_id = $id;
+    }
+
+    public function commit($mode = 'email')
+    {
+        $results = false;
+
+        if(is_null($this->uuid))
+        {
+            switch($mode)
+            {
+                case 'email':
+                    if($response = $this->createWithEmail())
+                    {
+                        if(is_array($response))
+                        {
+                            $this->uuid = $response['lead_uuid'];
+                            $results = $this;
+                        }
+                    }
+                    break;
+
+                case 'shipping':
+                    $results = $this;
+                    break;
+
+                case 'billing':
+                    $results = $this;
+                    break;
+            }
+        }
+        else
+        {
+            // @todo - run the updates.
+            $results = $this;
+        }
+
+        return $results;
+    }
+
+    private function createWithEmail()
+    {
+        $results = false;
+
+        $payload = [
+            'email' => $this->email,
+            'checkoutType' => $this->checkout_type,
+            'checkoutId' => $this->checkout_id,
+            'shopUuid' => $this->shop,
+            'emailList' => $this->optin,
+        ];
+
+        $url = $this->leads_url().'/email';
+        $lead = $this->allcommerce_client->post($url, $payload);
+
+        if((!is_null($lead)) && is_array($lead))
+        {
+            if($lead['success'] == true)
+            {
+                $results = ['lead_uuid' => $lead['lead_uuid']];
+            }
+            else
+            {
+                $results = $lead['reason'];
+            }
+        }
+
+        return $results;
     }
 }
