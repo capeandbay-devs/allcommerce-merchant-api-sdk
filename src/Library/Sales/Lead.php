@@ -215,6 +215,10 @@ class Lead extends Feature
         return $this->products;
     }
 
+    public function setLeadId($uuid) : void
+    {
+        $this->uuid = $uuid;
+    }
 
     public function setEmail($email) : void
     {
@@ -267,7 +271,20 @@ class Lead extends Feature
         }
         else
         {
-            // @todo - run the updates.
+            switch($mode)
+            {
+                case 'email':
+                    if($response = $this->updateWithEmail())
+                    {
+                        if(is_array($response))
+                        {
+                            $this->uuid = $response['lead_uuid'];
+                            $results = $this;
+                        }
+                    }
+                    break;
+            }
+
             $results = $this;
         }
 
@@ -289,18 +306,38 @@ class Lead extends Feature
         $url = $this->leads_url().'/email';
         $lead = $this->allcommerce_client->post($url, $payload);
 
-        if((!is_null($lead)) && is_array($lead))
+        return $this->evaluateLeadResponse($lead);
+    }
+
+    private function evaluateLeadResponse($lead_response)
+    {
+        $results = false;
+        if((!is_null($lead_response)) && is_array($lead_response))
         {
-            if($lead['success'] == true)
+            if ($lead_response['success'] == true)
             {
-                $results = ['lead_uuid' => $lead['lead_uuid']];
+                $results = ['lead_uuid' => $lead_response['lead_uuid']];
             }
             else
             {
-                $results = $lead['reason'];
+                $results = $lead_response['reason'];
             }
         }
 
         return $results;
+    }
+
+    private function updateWithEmail()
+    {
+        $payload = [
+            'email' => $this->email,
+            'emailList' => $this->optin,
+            'lead_uuid' => $this->uuid
+        ];
+
+        $url = $this->leads_url().'/email';
+        $lead = $this->allcommerce_client->put($url, $payload);
+
+        return $this->evaluateLeadResponse($lead);
     }
 }

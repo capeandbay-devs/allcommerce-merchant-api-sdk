@@ -45,54 +45,86 @@ class AllCommerceAPIClientService
         return $results;
     }
 
-    public function post($endpoint, $args = [], $headers = [])
+    /**
+     * @param $endpoint
+     * @param $args
+     * @param $headers
+     * @return Curl;
+     */
+    private function preparePostPut($endpoint, $args = [], $headers = [])
     {
-        $results = false;
-
         $url = $endpoint;
 
         if(!empty($args))
         {
             if(!empty($headers))
             {
-                $response = Curl::to($url)
+                $results = Curl::to($url)
                     ->withHeaders($headers)
                     ->withData($args)
                     ->asJson(true)
-                    ->post();
+                    ;
             }
             else
             {
-                $response = Curl::to($url)
+                $results = Curl::to($url)
                     ->withHeader('Accept: application/json')
                     ->withData($args)
                     ->asJson(true)
-                    ->post();
+                    ;
             }
         }
         elseif(!empty($headers))
         {
-            $response = Curl::to($url)
+            $results = Curl::to($url)
                 ->withHeaders($headers)
                 ->asJson(true)
-                ->post();
+                ;
         }
         else
         {
-            $response = Curl::to($url)
+            $results = Curl::to($url)
                 ->withHeader('Accept: application/json')
                 ->asJson(true)
-                ->post();
+                ;
         }
+
+        return $results;
+    }
+
+    public function post($endpoint, $args = [], $headers = [])
+    {
+        $results = false;
+
+        $response = $this->preparePostPut($endpoint, $args, $headers)->post();
 
         if($response)
         {
-            Log::info('AllCommerce Response from '.$url, $response);
+            Log::info('AllCommerce Response from '.$endpoint, $response);
             $results = $response;
         }
         else
         {
-            Log::info('AllCommerce Null Response from '.$url);
+            Log::info('AllCommerce Null Response from '.$endpoint);
+        }
+
+        return $results;
+    }
+
+    public function put($endpoint, $args = [], $headers = [])
+    {
+        $results = false;
+
+        $response = $this->preparePostPut($endpoint, $args, $headers)->put();
+
+        if($response)
+        {
+            Log::info('AllCommerce Response from '.$endpoint, $response);
+            $results = $response;
+        }
+        else
+        {
+            Log::info('AllCommerce Null Response from '.$endpoint);
         }
 
         return $results;
