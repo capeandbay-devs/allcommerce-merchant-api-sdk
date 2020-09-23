@@ -40,7 +40,6 @@ class Lead extends Feature
                     default:
                         $this->$col = null;
                 }
-
             }
         }
     }
@@ -241,6 +240,16 @@ class Lead extends Feature
         $this->checkout_id = $id;
     }
 
+    public function setShippingAddress(array $addy)
+    {
+        $this->shipping_address = $addy;
+    }
+
+    public function setBillingAddress(array $addy)
+    {
+        $this->billing_address = $addy;
+    }
+
     public function commit($mode = 'email')
     {
         $results = false;
@@ -261,7 +270,13 @@ class Lead extends Feature
                     break;
 
                 case 'shipping':
-                    $results = $this;
+                    if($response = $this->createWithShipping())
+                    {
+                        if(is_array($response))
+                        {
+                            $results = $this;
+                        }
+                    }
                     break;
 
                 case 'billing':
@@ -286,6 +301,44 @@ class Lead extends Feature
             }
 
             $results = $this;
+        }
+
+        return $results;
+    }
+
+    private function createWithShipping()
+    {
+        $results = false;
+
+        $payload = [
+            'shipping' => $this->shipping_address,
+            'billing' => $this->billing_address,
+            'checkoutType' => $this->checkout_type,
+            'checkoutId' => $this->checkout_id,
+            'shopUuid' => $this->shop,
+            'emailList' => $this->optin,
+        ];
+
+        $url = $this->leads_url().'/shipping';
+        $lead = $this->allcommerce_client->post($url, $payload);
+
+        if($lead && is_array($lead))
+        {
+            if(array_key_exists('success', $lead) && $lead['success'])
+            {
+                $this->uuid = $lead['lead']['id'];
+                $this->shipping_address = $lead['shipping'];
+                $this->shipping_uuid = $lead['shipping']['id'];
+
+                $this->billing_address = $lead['billing'];
+                $this->billing_uuid = $lead['billing']['id'];
+
+                $results = [
+                    'lead_uuid' => $this->uuid,
+                    'shipping_uuid' => $this->shipping_uuid,
+                    'billing_uuid' => $this->billing_uuid
+                ];
+            }
         }
 
         return $results;
