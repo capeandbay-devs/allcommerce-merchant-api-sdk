@@ -392,14 +392,21 @@ class Lead extends Feature
         $payload = [
             'lead_uuid' => $this->uuid,
             'shipping' => $this->shipping_address,
-            'shipping_uuid' => $this->shipping_uuid,
             'emailList' => $this->optin,
         ];
 
-        if((!is_null($this->billing_address)) && (!is_null($this->billing_uuid)))
+        if((!is_null($this->shipping_uuid)))
+        {
+            $payload['shipping_uuid'] = $this->shipping_uuid;
+        }
+
+        if((!is_null($this->billing_address)))
         {
             $payload['billing'] = $this->billing_address;
-            $payload['billing_uuid'] = $this->billing_uuid;
+            if((!is_null($this->billing_uuid)))
+            {
+                $payload['billing_uuid'] = $this->billing_uuid;
+            }
         }
 
         $url = $this->leads_url().'/shipping';
@@ -412,8 +419,8 @@ class Lead extends Feature
     {
         $payload = [
             'lead_uuid' => $this->uuid,
-            'billing' => $this->shipping_address,
-            'billing_uuid' => $this->shipping_uuid,
+            'billing' => $this->billing_address,
+            'billing_uuid' => $this->billing_uuid,
             'emailList' => $this->optin,
         ];
 
