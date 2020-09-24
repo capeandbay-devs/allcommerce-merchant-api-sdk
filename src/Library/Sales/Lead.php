@@ -384,7 +384,7 @@ class Lead extends Feature
         $url = $this->leads_url().'/email';
         $lead = $this->allcommerce_client->put($url, $payload);
 
-        return $this->evaluateLeadResponse($lead);
+        return $this->evalShipLeadResponse($lead);
     }
 
     private function updateWithShipping()
@@ -450,17 +450,27 @@ class Lead extends Feature
             if(array_key_exists('success', $lead) && $lead['success'])
             {
                 $this->uuid = $lead['lead']['id'];
-                $this->shipping_address = $lead['shipping'];
-                $this->shipping_uuid = $lead['shipping']['id'];
-
-                $this->billing_address = $lead['billing'];
-                $this->billing_uuid = $lead['billing']['id'];
 
                 $results = [
                     'lead_uuid' => $this->uuid,
-                    'shipping_uuid' => $this->shipping_uuid,
-                    'billing_uuid' => $this->billing_uuid
+                    'shipping_uuid' => null,//$this->shipping_uuid,
+                    'billing_uuid' => null//$this->billing_uuid
                 ];
+
+                if(array_key_exists('shipping', $lead))
+                {
+                    $this->shipping_address = $lead['shipping'];
+                    $this->shipping_uuid = $lead['shipping']['id'];
+                    $results['shipping_uuid'] = $this->shipping_uuid;
+                }
+
+                if(array_key_exists('billing', $lead))
+                {
+                    $this->billing_address = $lead['billing'];
+                    $this->billing_uuid = $lead['billing']['id'];
+                    $results['billing_uuid'] = $this->billing_uuid;
+                }
+
             }
         }
 
