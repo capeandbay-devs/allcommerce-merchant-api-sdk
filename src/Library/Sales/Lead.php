@@ -483,6 +483,8 @@ class Lead extends Feature
             {
                 $headers[] = "x-ac-shop-uuid: {$this->shop}";
             }
+
+            $results = $headers;
         }
 
         return $results;
