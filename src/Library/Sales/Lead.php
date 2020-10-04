@@ -13,7 +13,7 @@ class Lead extends Feature
     protected $attributes;
     protected $order;
     protected $checkout_type, $checkout_id;
-    protected $shop, $merchant, $client;
+    protected $shop, $merchant, $client, $access_token;
     protected $ip, $utm;
     protected $created, $last_updated;
     protected $products;
@@ -214,6 +214,11 @@ class Lead extends Feature
         return $this->products;
     }
 
+    public function setAccessToken($token) : void
+    {
+        $this->access_token = $token;
+    }
+
     public function setLeadId($uuid) : void
     {
         $this->uuid = $uuid;
@@ -340,94 +345,147 @@ class Lead extends Feature
     {
         $results = false;
 
-        $payload = [
-            'shipping' => $this->shipping_address,
-            'billing' => $this->billing_address,
-            'checkoutType' => $this->checkout_type,
-            'checkoutId' => $this->checkout_id,
-            'shopUuid' => $this->shop,
-            'emailList' => $this->optin,
-        ];
+        if(!is_null($this->access_token))
+        {
+            $payload = [
+                'shipping' => $this->shipping_address,
+                'billing' => $this->billing_address,
+                'checkoutType' => $this->checkout_type,
+                'checkoutId' => $this->checkout_id,
+                'shopUuid' => $this->shop,
+                'emailList' => $this->optin,
+            ];
 
-        $url = $this->leads_url().'/shipping';
-        $lead = $this->allcommerce_client->post($url, $payload);
+            $url = $this->leads_url().'/shipping';
+            $lead = $this->allcommerce_client->post($url, $payload, $this->putTogetherHeaders());
 
-        return $this->evalShipLeadResponse($lead);
+            $results = $this->evalShipLeadResponse($lead);
+        }
+
+        return $results;
     }
 
     private function createWithEmail()
     {
         $results = false;
 
-        $payload = [
-            'email' => $this->email,
-            'checkoutType' => $this->checkout_type,
-            'checkoutId' => $this->checkout_id,
-            'shopUuid' => $this->shop,
-            'emailList' => $this->optin,
-        ];
+        if(!is_null($this->access_token))
+        {
+            $payload = [
+                'email' => $this->email,
+                'checkoutType' => $this->checkout_type,
+                'checkoutId' => $this->checkout_id,
+                'shopUuid' => $this->shop,
+                'emailList' => $this->optin,
+            ];
 
-        $url = $this->leads_url().'/email';
-        $lead = $this->allcommerce_client->post($url, $payload);
+            $url = $this->leads_url().'/email';
+            $lead = $this->allcommerce_client->post($url, $payload, $this->putTogetherHeaders());
 
-        return $this->evaluateLeadResponse($lead);
+            $results = $this->evaluateLeadResponse($lead);
+        }
+
+        return $results;
     }
 
     private function updateWithEmail()
     {
-        $payload = [
-            'email' => $this->email,
-            'emailList' => $this->optin,
-            'lead_uuid' => $this->uuid
-        ];
+        $results = false;
 
-        $url = $this->leads_url().'/email';
-        $lead = $this->allcommerce_client->put($url, $payload);
+        if(!is_null($this->access_token))
+        {
+            $payload = [
+                'email' => $this->email,
+                'emailList' => $this->optin,
+                'lead_uuid' => $this->uuid
+            ];
 
-        return $this->evalShipLeadResponse($lead);
+            $url = $this->leads_url().'/email';
+            $lead = $this->allcommerce_client->put($url, $payload, $this->putTogetherHeaders());
+
+            $results = $this->evalShipLeadResponse($lead);
+        }
+
+        return $results;
     }
 
     private function updateWithShipping()
     {
-        $payload = [
-            'lead_uuid' => $this->uuid,
-            'shipping' => $this->shipping_address,
-            'emailList' => $this->optin,
-        ];
+        $results = false;
 
-        if((!is_null($this->shipping_uuid)))
+        if(!is_null($this->access_token))
         {
-            $payload['shipping_uuid'] = $this->shipping_uuid;
-        }
+            $payload = [
+                'lead_uuid' => $this->uuid,
+                'shipping' => $this->shipping_address,
+                'emailList' => $this->optin,
+            ];
 
-        if((!is_null($this->billing_address)))
-        {
-            $payload['billing'] = $this->billing_address;
-            if((!is_null($this->billing_uuid)))
+            if((!is_null($this->shipping_uuid)))
             {
-                $payload['billing_uuid'] = $this->billing_uuid;
+                $payload['shipping_uuid'] = $this->shipping_uuid;
             }
+
+            if((!is_null($this->billing_address)))
+            {
+                $payload['billing'] = $this->billing_address;
+                if((!is_null($this->billing_uuid)))
+                {
+                    $payload['billing_uuid'] = $this->billing_uuid;
+                }
+            }
+
+            $url = $this->leads_url().'/shipping';
+            $lead = $this->allcommerce_client->put($url, $payload, $this->putTogetherHeaders());
+
+            $results = $this->evalShipLeadResponse($lead);
         }
 
-        $url = $this->leads_url().'/shipping';
-        $lead = $this->allcommerce_client->put($url, $payload);
-
-        return $this->evalShipLeadResponse($lead);
+        return $results;
     }
 
     private function updateWithBillingOnly()
     {
-        $payload = [
-            'lead_uuid' => $this->uuid,
-            'billing' => $this->billing_address,
-            'billing_uuid' => $this->billing_uuid,
-            'emailList' => $this->optin,
-        ];
+        $results = false;
 
-        $url = $this->leads_url().'/billing';
-        $lead = $this->allcommerce_client->put($url, $payload);
+        if(!is_null($this->access_token))
+        {
+            $payload = [
+                'lead_uuid' => $this->uuid,
+                'billing' => $this->billing_address,
+                'billing_uuid' => $this->billing_uuid,
+                'emailList' => $this->optin,
+            ];
 
-        return $this->evalShipLeadResponse($lead);
+            $url = $this->leads_url().'/billing';
+            $lead = $this->allcommerce_client->put($url, $payload, $this->putTogetherHeaders());
+
+            $results = $this->evalShipLeadResponse($lead);
+        }
+
+        return $results;
+
+    }
+
+    private function putTogetherHeaders()
+    {
+        $results = [];
+
+        if(!is_null($this->access_token))
+        {
+            $headers = [
+                'Accept: application/json',
+                'Content-Type: application/json',
+                "x-allcommerce-token: {$this->access_token}",
+            ];
+
+            if(!is_null($this->shop))
+            {
+                $headers[] = "x-ac-shop-uuid: {$this->shop}";
+            }
+        }
+
+        return $results;
     }
 
     private function evaluateLeadResponse($lead_response)
