@@ -132,7 +132,7 @@ class Storefront extends Feature
                     $headers[] = "x-ac-shop-uuid: {$this->ac_shop}";
                 }
 
-                $response = $this->allcommerce_client()->get($this->shipping_rates_url(), $headers);
+                $response = $this->allcommerce_client->get($this->shipping_rates_url(), $headers);
 
                 if($response && array_key_exists('success', $response))
                 {
