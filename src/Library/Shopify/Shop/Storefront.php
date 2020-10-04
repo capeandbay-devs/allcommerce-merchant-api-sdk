@@ -2,10 +2,11 @@
 
 namespace AllCommerce\DepartmentStore\Library\Shopify\Shop;
 
-use AllCommerce\DepartmentStore\Library\Shopify\SalesChannel;
 use Ixudra\Curl\Facades\Curl;
+use AllCommerce\DepartmentStore\Library\Feature;
+use AllCommerce\DepartmentStore\Library\Shopify\SalesChannel;
 
-class Storefront extends SalesChannel
+class Storefront extends Feature
 {
     protected $storefront_url = '/shop';
 
@@ -24,9 +25,7 @@ class Storefront extends SalesChannel
 
     public function storefront_url()
     {
-        // @todo - need a way to determine that the shop is a shopify shop before
-        // @todo - passing the shopify set of web points.
-        return $this->ac_shopify_url().$this->storefront_url;
+        return $this->allcommerce_client->api_url().$this->storefront_url;
     }
 
     public function shipping_rates_url()
@@ -114,28 +113,48 @@ class Storefront extends SalesChannel
     {
         $results = false;
 
-        if(!empty($this->shipping_rates))
+        if(!is_null($this->access_token))
         {
-            $results = $this->shipping_rates;
-        }
-        else
-        {
-            $payload = [
-                'shop_url' => $this->shop_url
-            ];
-
-            $response = $this->allcommerce_client()->post($this->shipping_rates_url(), $payload);
-
-            if($response && array_key_exists('success', $response))
+            if(!empty($this->shipping_rates))
             {
-                if($response['success'])
+                $results = $this->shipping_rates;
+            }
+            else
+            {
+                $headers = [
+                    'Accept: application/json',
+                    'Content-Type: application/json',
+                    "x-allcommerce-token: {$this->access_token}",
+                ];
+
+                if(!is_null($this->ac_shop))
                 {
-                    $this->shipping_rates = $response['shipping_rates'];
-                    $results = $this->shipping_rates;
+                    $headers[] = "x-ac-shop-uuid: {$this->ac_shop}";
+                }
+
+                $response = $this->allcommerce_client()->get($this->shipping_rates_url(), $headers);
+
+                if($response && array_key_exists('success', $response))
+                {
+                    if($response['success'])
+                    {
+                        $this->shipping_rates = $response['shipping_rates'];
+                        $results = $this->shipping_rates;
+                    }
                 }
             }
         }
 
         return $results;
+    }
+
+    public function setShopUuid($uuid) : void
+    {
+        $this->ac_shop = $uuid;
+    }
+
+    public function setAccessToken($token) : void
+    {
+        $this->access_token = $token;
     }
 }

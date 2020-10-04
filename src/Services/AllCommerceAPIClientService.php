@@ -20,13 +20,20 @@ class AllCommerceAPIClientService
         return $this->root_url.$this->api_url;
     }
 
-    public function get($endpoint)
+    public function get($endpoint, $headers = [])
     {
         $results = false;
 
-        $headers = ['Accept: application/json',"Authorization: Bearer ".config('dept-store.deets.oauth_token')];
-
         $url = $endpoint;
+
+        if(empty($headers))
+        {
+            $headers = [
+                'Accept: application/json',
+                //"Authorization: Bearer ".config('dept-store.deets.oauth_token')
+            ];
+        }
+
         $response = Curl::to($url)
             ->withHeaders($headers)
             ->asJson(true)
