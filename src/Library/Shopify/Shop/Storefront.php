@@ -28,6 +28,11 @@ class Storefront extends Feature
         return $this->allcommerce_client->api_url().$this->storefront_url;
     }
 
+    public function shopify_storefront_url()
+    {
+        return $this->allcommerce_client->api_url().'/shopify'.$this->storefront_url;
+    }
+
     public function shipping_rates_url()
     {
         return $this->storefront_url().'/shipping-rates';
@@ -37,7 +42,8 @@ class Storefront extends Feature
     {
         $results = false;
 
-        $response = Curl::to($this->storefront_url())
+        $response = Curl::to($this->shopify_storefront_url())
+            //->withHeaders($headers)
             ->withData($data)
             ->asJson(true)
             ->post();
