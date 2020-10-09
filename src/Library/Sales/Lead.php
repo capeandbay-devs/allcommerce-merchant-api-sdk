@@ -341,6 +341,29 @@ class Lead extends Feature
         return $results;
     }
 
+    public function draftOrderWithShippingMethod($method)
+    {
+        $results = false;
+
+        if((!is_null($this->uuid)) && (!is_null($this->shop)))
+        {
+            $payload = [
+                'leadUuid' => $this->getLeadId(),
+                'shippingMethod' => $method
+            ];
+
+            $url = $this->leads_url().'/draftOrder/shippingMethod';
+            $lead = $this->allcommerce_client->post($url, $payload, $this->putTogetherHeaders());
+
+            if($lead)
+            {
+                $results = $lead;
+            }
+        }
+
+        return $results;
+    }
+
     private function createWithShipping()
     {
         $results = false;
