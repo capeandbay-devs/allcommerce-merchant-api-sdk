@@ -178,7 +178,14 @@ class Order extends Feature
 
             if(!is_null($this->shop))
             {
-                $headers[] = "x-ac-shop-uuid: {$this->shop}";
+                if(is_string($this->shop))
+                {
+                    $headers[] = "x-ac-shop-uuid: {$this->shop}";
+                }
+                else
+                {
+                    $headers[] = "x-ac-shop-uuid: {$this->shop['id']}";
+                }
             }
 
             $results = $headers;
