@@ -187,9 +187,15 @@ class Order extends Feature
         return $results;
     }
 
-    public function processPaymentAuth($details)
+    public function processCreditPaymentAuth($details)
     {
         $results = false;
+
+        if(!is_null($this->access_token))
+        {
+            $url = $this->orders_url().'/payments/credit/authorize';
+            $results = $this->allcommerce_client->post($url, $details, $this->putTogetherHeaders());
+        }
 
         return $results;
     }
