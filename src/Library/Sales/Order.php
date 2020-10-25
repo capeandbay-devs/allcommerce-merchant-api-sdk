@@ -206,4 +206,17 @@ class Order extends Feature
 
         return $results;
     }
+
+    public function processCreditPaymentCapture($details)
+    {
+        $results = false;
+
+        if(!is_null($this->access_token))
+        {
+            $url = $this->orders_url().'/payments/credit/capture';
+            $results = $this->allcommerce_client->post($url, $details, $this->putTogetherHeaders());
+        }
+
+        return $results;
+    }
 }
